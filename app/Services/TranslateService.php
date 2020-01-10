@@ -28,7 +28,7 @@ class TranslateService
             $names = json_decode($contact['names']);
             $result = [];
             foreach ($names as $name) {
-                $source = detectIfContactIsArabic($name);
+                $source = detectContactLanguage($name);
                 $target = $source == 'en' ? 'ar' : 'en';
                 if (!$name)
                     continue;
