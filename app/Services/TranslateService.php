@@ -26,22 +26,31 @@ class TranslateService
         $contacts = $this->model->get();
         foreach ($contacts as $contact) {
             $names = json_decode($contact['names']);
+            $hits = json_decode($contact['hits']);
             $result = [];
-            foreach ($names as $name) {
+            $translatedNamesBefore = [];
+            foreach ($names as $key => $name) {
                 $source = detectContactLanguage($name);
                 $target = $source == 'en' ? 'ar' : 'en';
                 if (!$name)
                     continue;
-                $translatedName = $this->translate->setSource($source)->setTarget($target)->translate($name);
-                if (array_key_exists($translatedName, $result)) {
-                    $hit = $result[$translatedName] + 1;
-                    $result[$translatedName] = $hit;
+                /*CHECK IF NAME TRANSLATED BEFORE*/
+                if (array_key_exists($name, $translatedNamesBefore)) {
+                    $translatedName =  $translatedNamesBefore[$name];
+
                 } else {
-                    $result[$translatedName] = 1;
+                    $translatedName  = $this->translate->setSource($source)->setTarget($target)->translate($name);
+                    $translatedNamesBefore[$name] = $translatedName;
                 }
+                $result[] = $translatedName;
+
+                /* INCREMENT HITS BY 1*/
+                $hit = $hits[$key] + 1;
+
+                $newHits[] = $hit;
             }
-            $names = array_keys($result);
-            $contact->update(['names' => $names, 'hits' => array_values($result)]);
+
+            $contact->update(['translated_names' => $result, 'hits' => $newHits]);
         }
     }
 }

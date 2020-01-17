@@ -17,7 +17,7 @@ class ContactsTableSeeder extends Seeder
         foreach ($contacts as $contact) {
             $data [] = [
                 'names'   => $contact['names'],
-//                'hits' => json_encode(array_fill(0, count(json_decode($contact['names'])), 0))
+                'hits' => $contact['hits']
             ];
         }
         \App\Contact::insert($data);
