@@ -12,14 +12,10 @@ jobs:
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        operating-system: ['ubuntu-latest', 'windows-latest', 'macos-latest']
-        php-versions: ['7.2']
-        phpunit-versions: ['latest']
+       
         include:
         - operating-system: 'ubuntu-latest'
           php-versions: '7.2'
-          phpunit-versions: '8.5.13'
-
     steps:
     - uses: actions/checkout@v2
 
@@ -31,9 +27,9 @@ jobs:
       uses: actions/cache@v2
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-php7.2-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
-          ${{ runner.os }}-php-
+          ${{ runner.os }}-php7.2-
 
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
